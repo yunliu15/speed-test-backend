@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const projectController = require('../../controlers/projectsController');
+const projectsController = require('../../controlers/projectsController');
 
 router.route('/')
-    .get(projectController.getAllProjects)
-    .post(projectController.createProject)
-    .put(projectController.updateProject)
-    .delete(projectController.deleteProject)
+    .get(projectsController.getAllProjects)
+    .post(projectsController.createProject)
+    .put(projectsController.updateProject)
+    .delete(projectsController.deleteProject)
 
-router.route('/:id').get(projectController.getProject);
+router.route('/:id').get(projectsController.getProject);
 
 module.exports = router;

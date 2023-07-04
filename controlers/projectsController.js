@@ -29,9 +29,6 @@ const updateProject = async (req, res) => {
         return res.status(204).json({'message': `No project mathces ID ${req.body.id}`});
     }
     if(req?.body?.projectName) project.projectName = req.body.projectName;
-    if(req?.body?.domain) {
-        project.domains = project.domains? [...project.domains, req?.body?.domain]: [req?.body?.domain];
-    }
     const result = await project.save();
     res.json(result);
 }
