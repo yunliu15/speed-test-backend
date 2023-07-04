@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const resultSchema = new Schema({
+    projectName: String,
+    domain: String,
     logTimestamp: String,
     desktopPerformanceScore: Number,
     desktopLoadTime: Number,
