@@ -29,9 +29,14 @@ app.use(express.json());
 //middleware for cookies
 app.use(cookieParser());
 
+//serve static files
+app.use(express.static(path.join(__dirname, '/public'))); // default for /
+
+// routes
 app.get('/', (req, res) => res.json({sucess: 'Hello World!'}));
 app.use('/login', require('./routes/login'));
 app.use('/register', require('./routes/register'));
+app.use('/refresh', require('./routes/refresh'));
 
 app.use(verifyJWT);
 
