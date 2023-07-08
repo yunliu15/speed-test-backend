@@ -94,7 +94,7 @@ const addDomain = async (req, res) => {
     }
     try {
         const result = await Project.findOneAndUpdate(
-            { _id: req.params.id }, 
+            { _id: req.params.id, "domains.domainName":{$ne: req.body.domain} }, 
             { $push: { domains: {domainName: req.body.domain} } }, 
             { new: true }
         ).exec(); 
