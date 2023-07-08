@@ -11,10 +11,17 @@ const createProject = async (req, res) => {
         return res.status(400).json({'message': 'Project name is required.'})
     }
     try {
-        const result = await Project.create({
-            "projectName": req.body.projectName
-        });
-        res.status(201).json(result);
+        const duplicate = await Project.findOne({projectName: req.body.projectName}).exec();
+        if (!duplicate) {
+            const result = await Project.create({
+                "projectName": req.body.projectName
+            });
+            res.status(201).json(result);
+        } else {
+            return res.status(400).json({'message': `Project ${req.body.projectName} already exists`})
+        }
+        
+        
     } catch(err) {
         console.error(err);
         res.sendStatus(400);
