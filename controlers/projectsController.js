@@ -97,7 +97,8 @@ const addDomain = async (req, res) => {
             { _id: req.params.id, "domains.domainName":{$ne: req.body.domain} }, 
             { $push: { domains: {domainName: req.body.domain} } }, 
             { new: true }
-        ).exec(); 
+        ).exec();
+        if (!result) return res.sendStatus(204);
         res.json(result);
     } catch(err) {
         console.error(err);
@@ -106,15 +107,16 @@ const addDomain = async (req, res) => {
 }
 
 const deleteDomain = async (req, res) => {
-    if (!req?.params?.id || !req?.params?.domainid) {
+    if (!req?.params?.id || !req?.body?.domainid) {
         return res.status(400).json({'message': 'Project ID and domainName are required'});
     }
     try {
         const result = await Project.findOneAndUpdate(
             { _id: req.params.id }, 
-            { $pull: { domains: {_id: req.params.domainid} } }, 
+            { $pull: { domains: {_id: req.body.domainid} } }, 
             { new: true }
         ).exec(); 
+        if (!result) return res.sendStatus(204);
         res.json(result);
     } catch(err) {
         console.error(err);

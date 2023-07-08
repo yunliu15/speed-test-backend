@@ -12,6 +12,6 @@ router.route('/:id').get(projectsController.getProject);
 
 router.route('/:id/domains').get(projectsController.getAllDomains);
 router.route('/:id/domains').put(projectsController.addDomain);
-router.route('/:id/:domainid').put(projectsController.deleteDomain);
+router.route('/:id/domains/delete').put(projectsController.deleteDomain);
 
 module.exports = router;
