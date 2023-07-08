@@ -17,6 +17,7 @@ const createProject = async (req, res) => {
         res.status(201).json(result);
     } catch(err) {
         console.error(err);
+        res.sendStatus(400);
     }
 }
 
@@ -24,36 +25,101 @@ const updateProject = async (req, res) => {
     if (!req?.body?.id) {
         return res.status(400).json({'message': 'ID is required'});
     }
-    const project = await Project.findOne({_id: req.body.id}).exec();
-    if(!project) {
-        return res.status(204).json({'message': `No project mathces ID ${req.body.id}`});
+    try {
+        const project = await Project.findOne({_id: req.body.id}).exec();
+        if(!project) {
+            return res.status(204).json({'message': `No project mathces ID ${req.body.id}`});
+        }
+        if(req?.body?.projectName) project.projectName = req.body.projectName;
+        const result = await project.save();
+        res.json(result);
+    } catch(err) {
+        console.error(err);
     }
-    if(req?.body?.projectName) project.projectName = req.body.projectName;
-    const result = await project.save();
-    res.json(result);
 }
 
 const deleteProject = async (req, res) => {
     if (!req?.body?.id) {
         return res.status(400).json({'message': 'ID is required'});
     }
-    const project = await Project.findOne({_id: req.body.id}).exec();
-    if(!project) {
-        return res.status(204).json({'message': `No project mathces ID ${req.body.id}`});
+    try {
+        const project = await Project.findOne({_id: req.body.id}).exec();
+        if(!project) {
+            return res.status(400).json({'message': `No project mathces ID ${req.body.id}`});
+        }
+        const result = await project.deleteOne();
+        res.json(result);
+    } catch(err) {
+        console.error(err);
+        res.sendStatus(400);
     }
-    const result = await project.deleteOne();
-    res.json(result);
 }
 
 const getProject = async (req, res) => {
     if (!req?.params?.id) {
         return res.status(400).json({'message': 'ID is required'});
     }
-    const project = await Project.findOne({_id: req.params.id}).exec();
-    if(!project) {
-        return res.status(204).json({'message': `No project mathces ID ${req.params.id}`});
+    try {
+        const project = await Project.findOne({_id: req.params.id}).exec();
+        if(!project) {
+            return res.status(400).json({'message': `No project mathces ID ${req.params.id}`});
+        }
+        res.json(project);
+    } catch(err) {
+        console.error(err);
+        res.sendStatus(400);
     }
-    res.json(project);
+    
+}
+
+const getAllDomains = async (req, res) => {
+    if (!req?.params?.id) {
+        return res.status(400).json({'message': 'Project ID is required'});
+    }
+    try {
+        const project = await Project.findOne({_id: req.params.id}).exec();
+        if(!project) {
+            return res.status(204).json({'message': `No project mathces ID ${req.body.id}`});
+        }
+        res.json(project.domains);
+    } catch(err) {
+        console.error(err);
+        res.sendStatus(400);
+    }
+}
+
+const addDomain = async (req, res) => {
+    if (!req?.params?.id || !req?.body?.domain) {
+        return res.status(400).json({'message': 'Project ID and domainName are required'});
+    }
+    try {
+        const result = await Project.findOneAndUpdate(
+            { _id: req.params.id }, 
+            { $push: { domains: {domainName: req.body.domain} } }, 
+            { new: true }
+        ).exec(); 
+        res.json(result);
+    } catch(err) {
+        console.error(err);
+        res.sendStatus(400);
+    }
+}
+
+const deleteDomain = async (req, res) => {
+    if (!req?.params?.id || !req?.params?.domainid) {
+        return res.status(400).json({'message': 'Project ID and domainName are required'});
+    }
+    try {
+        const result = await Project.findOneAndUpdate(
+            { _id: req.params.id }, 
+            { $pull: { domains: {_id: req.params.domainid} } }, 
+            { new: true }
+        ).exec(); 
+        res.json(result);
+    } catch(err) {
+        console.error(err);
+        res.sendStatus(400);
+    }
 }
 
 module.exports = {
@@ -61,5 +127,8 @@ module.exports = {
     createProject,
     updateProject,
     deleteProject,
-    getProject
+    getProject,
+    getAllDomains,
+    addDomain,
+    deleteDomain
 }
