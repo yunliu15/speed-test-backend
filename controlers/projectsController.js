@@ -18,7 +18,7 @@ const createProject = async (req, res) => {
             });
             res.status(201).json(result);
         } else {
-            return res.status(400).json({'message': `Project ${req.body.projectName} already exists`})
+            return res.status(400).json({'message': `${req.body.projectName} already exists`})
         }
         
         
