@@ -113,7 +113,7 @@ const addDomain = async (req, res) => {
     }
 }
 
-const deleteDomain = async (req, res) => {
+const deleteDomain = async (req, res) => {console.log(req.body)
     if (!req?.params?.id || !req?.body?.domainid) {
         return res.status(400).json({'message': 'Project ID and domainName are required'});
     }

@@ -41,6 +41,7 @@ app.use('/logout', require('./routes/logout'));
 
 app.use(verifyJWT);
 app.use('/projects', require('./routes/api/projects'));
+app.use('/speedTest', require('./routes/api/testResult'));
 
 app.all('*', (req, res) => {
     res.status(404);

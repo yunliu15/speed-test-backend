@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const resultSchema = new Schema({
-    projectName: String,
+    projectId: String,
+    domainId: String,
     domain: String,
     logTimestamp: String,
     desktopPerformanceScore: Number,
@@ -45,4 +46,4 @@ const resultSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model(Result, resultSchema);
+module.exports = mongoose.model('Result', resultSchema);
