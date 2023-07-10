@@ -95,6 +95,28 @@ const getAllDomains = async (req, res) => {
     }
 }
 
+const getDomain = async (req, res) => {
+    if (!req?.params?.id || !req?.params?.domainid) {
+        return res.status(400).json({'message': 'Project ID and Domain ID are required'});
+    }
+    const id = req.params.id;
+    const domainId = req.params.domainid;
+    try {
+        const project = await Project.findOne({_id: id}).exec();
+        if (!project) {
+            return res.status(400).json({'message': `No project mathces ID ${id}`});
+        }
+        const domain = project.domains.find(d=>d._id == domainId);
+        if(!domain) {
+            return res.status(400).json({'message': `No domain mathces ID ${domainId}`});
+        }
+        res.json(domain);
+    } catch(err) {
+        console.error(err);
+        res.sendStatus(400);
+    }
+}
+
 const addDomain = async (req, res) => {
     if (!req?.params?.id || !req?.body?.domain) {
         return res.status(400).json({'message': 'Project ID and domainName are required'});
@@ -139,5 +161,6 @@ module.exports = {
     getProject,
     getAllDomains,
     addDomain,
-    deleteDomain
+    deleteDomain,
+    getDomain
 }

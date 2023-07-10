@@ -11,6 +11,7 @@ router.route('/')
 router.route('/:id').get(projectsController.getProject);
 
 router.route('/:id/domains').get(projectsController.getAllDomains);
+router.route('/:id/domains/:domainid').get(projectsController.getDomain);
 router.route('/:id/domains').put(projectsController.addDomain); // add a new domain
 router.route('/:id/domains/delete').put(projectsController.deleteDomain); // delelte a domain
 

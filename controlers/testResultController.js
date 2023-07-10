@@ -9,8 +9,8 @@ const addResult = async (req, res) => {
     const domainId = req.body.domainId;
     const domainName = req.body.domainName;
     const url_base = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${domainName}&category=PERFORMANCE&key=${process.env.GOOGLE_API_KEY}`;
-    const urlMobile = url_base + '&strategy=MOBILE';console.log(urlMobile)
-    const urlDesktop = url_base + '&strategy=DESKTOP';console.log(urlDesktop)
+    const urlMobile = url_base + '&strategy=MOBILE';
+    const urlDesktop = url_base + '&strategy=DESKTOP';
     try {
         const mobileStream = await fetch(urlMobile);
         const mobileData = await mobileStream.json();
@@ -79,7 +79,7 @@ const addResult = async (req, res) => {
             }
             
         });
-        res.status(201).json({'message': 'speed test finished'});
+        res.status(201).json(result);
 
     } catch (err) {
         return { Error: err.stack };
@@ -89,7 +89,7 @@ const addResult = async (req, res) => {
 const getResults = async (req, res) => {
     const page = req.querry?.p || 1;
     const perPage = 20;
-    const results = await Result.find().limit(perPage).skip(perPage * page);
+    const results = await Result.find().sort([['logTimestamp', -1]]).limit(perPage).skip(perPage * (page - 1));
     if (!results) return res.status(204).json({'message': 'No results found.'});
     res.json(results);
 
