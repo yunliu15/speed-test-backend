@@ -11,80 +11,78 @@ const addResult = async (req, res) => {
     const url_base = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${domainName}&category=PERFORMANCE&key=${process.env.GOOGLE_API_KEY}`;
     const urlMobile = url_base + '&strategy=MOBILE';
     const urlDesktop = url_base + '&strategy=DESKTOP';
-    try {
+    try {console.log('fetching...')
         const mobileStream = await fetch(urlMobile);
         const mobileData = await mobileStream.json();
         console.log('mobile finished ', mobileData.analysisUTCTimestamp)
         const desktopStream = await fetch(urlDesktop);
         const desktopData = await desktopStream.json();
         console.log('desktop finished ', desktopData.analysisUTCTimestamp)
-        console.log('mobile score',mobileData.lighthouseResult.categories.performance.score);
-        console.log('desktop score',desktopData.lighthouseResult.categories.performance.score)
-        if (typeof mobileData.lighthouseResult.categories.performance.score !== 'undefined' 
-        || typeof desktopData.lighthouseResult.categories.performance.score  !== 'undefined') {
+        if (desktopData.analysisUTCTimestamp 
+        || mobileData.analysisUTCTimestamp) {
             const result = await Result.create({
                 projectId: projectId,
                 domainId: domainId,
                 domain: domainName,
-                logTimestamp: mobileData.analysisUTCTimestamp || '',
-                desktopPerformanceScore: desktopData.lighthouseResult.categories.performance.score || null,
-                desktopLoadTime: desktopData.lighthouseResult.timing.total || null,
-                desktopLoadingExperienceOverall: desktopData.loadingExperience.overall_category || '',
+                logTimestamp: mobileData.analysisUTCTimestamp || desktopData.analysisUTCTimestamp || '',
+                desktopPerformanceScore: desktopData.lighthouseResult?.categories?.performance?.score || null,
+                desktopLoadTime: desktopData.lighthouseResult?.timing?.total || null,
+                desktopLoadingExperienceOverall: desktopData.loadingExperience?.overall_category || '',
                 desktopFcpScore: {
-                    value: desktopData.lighthouseResult.audits['first-contentful-paint'].displayValue,
-                    score: desktopData.lighthouseResult.audits['first-contentful-paint'].score,
+                    value: desktopData.lighthouseResult?.audits['first-contentful-paint']?.displayValue || '',
+                    score: desktopData.lighthouseResult?.audits['first-contentful-paint']?.score || null,
                 },
                 desktopLcpScore: {
-                    value: desktopData.lighthouseResult.audits['largest-contentful-paint'].displayValue || '',
-                    score: desktopData.lighthouseResult.audits['largest-contentful-paint'].score || null,
+                    value: desktopData.lighthouseResult?.audits['largest-contentful-paint'].displayValue || '',
+                    score: desktopData.lighthouseResult?.audits['largest-contentful-paint'].score || null,
                 },
                 desktopClsScore: {
-                    value: desktopData.lighthouseResult.audits['cumulative-layout-shift'].displayValue,
-                    score: desktopData.lighthouseResult.audits['cumulative-layout-shift'].score,
+                    value: desktopData.lighthouseResult?.audits['cumulative-layout-shift'].displayValue || '',
+                    score: desktopData.lighthouseResult?.audits['cumulative-layout-shift'].score || null,
                 },
                 desktopTbtScore: {
-                    value: desktopData.lighthouseResult.audits['total-blocking-time'].displayValue || '',
-                    score: desktopData.lighthouseResult.audits['total-blocking-time'].score || null,
+                    value: desktopData.lighthouseResult?.audits['total-blocking-time'].displayValue || '',
+                    score: desktopData.lighthouseResult?.audits['total-blocking-time'].score || null,
                 },
                 desktopSpeedIndex: {
-                    value: desktopData.lighthouseResult.audits['speed-index'].displayValue || '',
-                    score: desktopData.lighthouseResult.audits['speed-index'].score || null,
+                    value: desktopData.lighthouseResult?.audits['speed-index'].displayValue || '',
+                    score: desktopData.lighthouseResult?.audits['speed-index'].score || null,
                 },
                 desktopTtiScore: {
-                    value: desktopData.lighthouseResult.audits['interactive'].displayValue || '',
-                    score: desktopData.lighthouseResult.audits['interactive'].score || null,
+                    value: desktopData.lighthouseResult?.audits['interactive'].displayValue || '',
+                    score: desktopData.lighthouseResult?.audits['interactive'].score || null,
                 },
-                mobilePerformanceScore: mobileData.lighthouseResult.categories.performance.score || null,
-                mobileLoadTime: mobileData.lighthouseResult.timing.total || null,
-                mobileLoadingExperienceOverall: mobileData.loadingExperience.overall_category || '',
+                mobilePerformanceScore: mobileData.lighthouseResult?.categories.performance.score || null,
+                mobileLoadTime: mobileData.lighthouseResult?.timing.total || null,
+                mobileLoadingExperienceOverall: mobileData.loadingExperience?.overall_category || '',
                 mobileFcpScore: {
-                    value: mobileData.lighthouseResult.audits['first-contentful-paint'].displayValue || '',
-                    score: mobileData.lighthouseResult.audits['first-contentful-paint'].score || null,
+                    value: mobileData.lighthouseResult?.audits['first-contentful-paint'].displayValue || '',
+                    score: mobileData.lighthouseResult?.audits['first-contentful-paint'].score || null,
                 },
                 mobileLcpScore: {
-                    value: mobileData.lighthouseResult.audits['largest-contentful-paint'].displayValue || '',
-                    score: mobileData.lighthouseResult.audits['largest-contentful-paint'].score || null,
+                    value: mobileData.lighthouseResult?.audits['largest-contentful-paint'].displayValue || '',
+                    score: mobileData.lighthouseResult?.audits['largest-contentful-paint'].score || null,
                 },
                 mobileClsScore: {
-                    value: mobileData.lighthouseResult.audits['cumulative-layout-shift'].displayValue || '',
-                    score: mobileData.lighthouseResult.audits['cumulative-layout-shift'].score || null,
+                    value: mobileData.lighthouseResult?.audits['cumulative-layout-shift'].displayValue || '',
+                    score: mobileData.lighthouseResult?.audits['cumulative-layout-shift'].score || null,
                 },
                 mobileTbtScore: {
-                    value: mobileData.lighthouseResult.audits['total-blocking-time'].displayValue || '',
-                    score: mobileData.lighthouseResult.audits['total-blocking-time'].score || null,
+                    value: mobileData.lighthouseResult?.audits['total-blocking-time'].displayValue || '',
+                    score: mobileData.lighthouseResult?.audits['total-blocking-time'].score || null,
                 },
                 mobileSpeedIndex: {
-                    value: mobileData.lighthouseResult.audits['speed-index'].displayValue || '',
-                    score: mobileData.lighthouseResult.audits['speed-index'].score || null,
+                    value: mobileData.lighthouseResult?.audits['speed-index'].displayValue || '',
+                    score: mobileData.lighthouseResult?.audits['speed-index'].score || null,
                 },
                 mobileTtiScore: {
-                    value: mobileData.lighthouseResult.audits['interactive'].displayValue || '',
-                    score: mobileData.lighthouseResult.audits['interactive'].score || null,
+                    value: mobileData.lighthouseResult?.audits['interactive'].displayValue || '',
+                    score: mobileData.lighthouseResult?.audits['interactive'].score || null,
                 }
                 
-            });
+            });console.log(result)
             res.status(201).json(result);
-        } else {
+        } else {console.log('error sent')
             return res.status(400).json({'message': 'Something went wrong, please try again later'});
         }
 

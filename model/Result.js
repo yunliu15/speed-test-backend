@@ -21,6 +21,14 @@ const resultSchema = new Schema({
         value: String,
         score: Number
     },
+    desktopTbtScore: {
+        value: String,
+        score: Number
+    },
+    desktopSpeedIndex: {
+        value: String,
+        score: Number
+    },
     desktopTtiScore: {
         value: String,
         score: Number
@@ -37,6 +45,14 @@ const resultSchema = new Schema({
         score: Number
     },
     mobileClsScore: {
+        value: String,
+        score: Number
+    },
+    mobileTbtScore: {
+        value: String,
+        score: Number
+    },
+    mobileSpeedIndex: {
         value: String,
         score: Number
     },
