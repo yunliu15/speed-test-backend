@@ -10,6 +10,7 @@ const path = require('path');
 const port = process.env.PORT || 3500;
 const mongoose = require('mongoose');
 const connectDB = require('./config/dbConn');
+const errorHandler = require('./middleware/errorHandler');
 
 connectDB();
 
@@ -53,6 +54,8 @@ app.all('*', (req, res) => {
         res.type('txt').send("404 Not Found");
     }
 })
+
+app.use(errorHandler);
 
 mongoose.connection.once('open', () => {
     console.log('connected to MongoDB');
