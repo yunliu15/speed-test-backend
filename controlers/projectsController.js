@@ -136,13 +136,13 @@ const addDomain = async (req, res) => {
 }
 
 const deleteDomain = async (req, res) => {console.log(req.body)
-    if (!req?.params?.id || !req?.body?.domainid) {
+    if (!req?.params?.id || !req?.params?.domainid) {
         return res.status(400).json({'message': 'Project ID and domainName are required'});
     }
     try {
         const result = await Project.findOneAndUpdate(
             { _id: req.params.id }, 
-            { $pull: { domains: {_id: req.body.domainid} } }, 
+            { $pull: { domains: {_id: req.params.domainid} } }, 
             { new: true }
         ).exec(); 
         if (!result) return res.sendStatus(204);
